@@ -12,7 +12,6 @@ type EmbedSendFormProps = ComponentProps & {
 const EmbedSendForm = (props: EmbedSendFormProps): JSX.Element => {
   const { sitecoreContext } = useSitecoreContext();
   const sxaStyles = `${props.params?.styles || ''}`;
-  const formId = props?.fields?.sendFormId.replace(/-/g, "");
 
   if (isEditingOrPreviewingPage(sitecoreContext.pageState)) {
     const isEditing = sitecoreContext.pageEditing;
