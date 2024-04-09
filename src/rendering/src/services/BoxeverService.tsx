@@ -118,7 +118,7 @@ const POINT_OF_SALE = 'PLAY! Summit';
 const CURRENCY = 'EUR';
 
 const CDP_CLIENT_KEY = 'pqs7z57p8zbjaks66qvnhifv2lvs525j' || '';
-const CDP_API_TARGET_ENDPOINT = 'https://api-engage-eu.sitecorecloud.io/v1.2' || '';
+const CDP_API_TARGET_ENDPOINT = 'https://api.boxever.com/v1.2' || '';
 export const isCdpConfigured = !!CDP_CLIENT_KEY && !!CDP_API_TARGET_ENDPOINT;
 
 export const BoxeverScripts: JSX.Element | undefined = isCdpConfigured ? (
