@@ -210,33 +210,33 @@ function delayUntilBoxeverIsReady(functionToDelay: () => unknown) {
 }
 
 function sendEventCreate(eventConfig: Record<string, unknown>, page?: string) {
-     if (typeof window === 'undefined' || !isBoxeverConfiguredInBrowser()) {
+  if (typeof window === 'undefined' || !isBoxeverConfiguredInBrowser()) {
     return new Promise<void>(function (resolve) {
       resolve();
     });
-    }
+  }
 
   // Set the page now as the location might have already changed when createEventPayload will be executed.
   const eventWithCurrentPage = getConfigWithCurrentPage(eventConfig, page);
   return new Promise(function (resolve, reject) {
     try {
-       delayUntilBoxeverIsReady(function () {
-      window._boxeverq.push(function () {
-        window.Boxever.eventCreate(
-          // Set the browserId on the event just before sending it to ensure it is up to date.
-          createEventPayload(eventWithCurrentPage),
-          function (response) {
-            if (!response) {
-              reject('No response provided.');
-            }
-            if (response.status !== 'OK') {
-              reject('Response status: ' + response.status);
-            }
-            resolve(response);
-          },
-          'json'
-        );
-         });
+      delayUntilBoxeverIsReady(function () {
+        window._boxeverq.push(function () {
+          window.Boxever.eventCreate(
+            // Set the browserId on the event just before sending it to ensure it is up to date.
+            createEventPayload(eventWithCurrentPage),
+            function (response) {
+              if (!response) {
+                reject('No response provided.');
+              }
+              if (response.status !== 'OK') {
+                reject('Response status: ' + response.status);
+              }
+              resolve(response);
+            },
+            'json'
+          );
+        });
       });
     } catch (err) {
       reject(err);
@@ -259,10 +259,9 @@ function callFlows(flowConfig: Record<string, unknown>) {
       delayUntilBoxeverIsReady(function () {
         window._boxeverq.push(function () {
           window.Boxever.callFlows(
-           
             // Set the browserId on the flow just before sending it to ensure it is up to date.
             createFlowPayload(eventWithCurrentPage),
-            
+
             function (response) {
               if (!response) {
                 reject('No response provided.');
@@ -272,7 +271,7 @@ function callFlows(flowConfig: Record<string, unknown>) {
             'json'
           );
         });
-       });
+      });
     } catch (err) {
       reject(err);
     }
