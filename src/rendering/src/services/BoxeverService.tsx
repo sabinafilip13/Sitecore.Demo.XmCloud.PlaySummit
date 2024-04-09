@@ -218,22 +218,18 @@ function sendEventCreate(eventConfig: Record<string, unknown>, page?: string) {
 
   // Set the page now as the location might have already changed when createEventPayload will be executed.
   const eventWithCurrentPage = getConfigWithCurrentPage(eventConfig, page);
-console.log("eventWithCurrentPage", eventWithCurrentPage)
   return new Promise(function (resolve, reject) {
     try {
        delayUntilBoxeverIsReady(function () {
       window._boxeverq.push(function () {
-        console.log(window.Boxever);
         window.Boxever.eventCreate(
           // Set the browserId on the event just before sending it to ensure it is up to date.
           createEventPayload(eventWithCurrentPage),
           function (response) {
             if (!response) {
               reject('No response provided.');
-              console.log('not ok');
             }
             if (response.status !== 'OK') {
-              console.log('OK');
               reject('Response status: ' + response.status);
             }
             resolve(response);
@@ -243,7 +239,6 @@ console.log("eventWithCurrentPage", eventWithCurrentPage)
          });
       });
     } catch (err) {
-      console.log('not ok at all');
       reject(err);
     }
   });
@@ -262,7 +257,6 @@ function callFlows(flowConfig: Record<string, unknown>) {
   return new Promise(function (resolve, reject) {
     try {
       delayUntilBoxeverIsReady(function () {
-      console.log(window.Boxever, flowConfig)
         window._boxeverq.push(function () {
           window.Boxever.callFlows(
            
@@ -270,7 +264,6 @@ function callFlows(flowConfig: Record<string, unknown>) {
             createFlowPayload(eventWithCurrentPage),
             
             function (response) {
-              console.log(response)
               if (!response) {
                 reject('No response provided.');
               }
@@ -281,7 +274,6 @@ function callFlows(flowConfig: Record<string, unknown>) {
         });
        });
     } catch (err) {
-      console.log('no response')
       reject(err);
     }
   });
