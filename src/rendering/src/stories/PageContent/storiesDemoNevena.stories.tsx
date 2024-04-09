@@ -1,7 +1,7 @@
 import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 
-import DemoNevena from '../components/DemoNevena';
+import { Default as DemoNevena } from '../../components/PageContent/DemoNevena';
 
 export default {
   title: 'Components/DemoNevena',

@@ -115,10 +115,10 @@ type GuestProfileResponse = GuestProfile | undefined;
 // ***** API *****
 
 const POINT_OF_SALE = 'PLAY! Summit';
-const CURRENCY = 'USD';
+const CURRENCY = 'EUR';
 
-const CDP_CLIENT_KEY = process.env.NEXT_PUBLIC_CUSTOM_CDP_CLIENT_KEY || '';
-const CDP_API_TARGET_ENDPOINT = process.env.NEXT_PUBLIC_CUSTOM_CDP_API_TARGET_ENDPOINT || '';
+const CDP_CLIENT_KEY = 'pqs7z57p8zbjaks66qvnhifv2lvs525j' || '';
+const CDP_API_TARGET_ENDPOINT = 'https://api-engage-eu.sitecorecloud.io/v1.2' || '';
 export const isCdpConfigured = !!CDP_CLIENT_KEY && !!CDP_API_TARGET_ENDPOINT;
 
 export const BoxeverScripts: JSX.Element | undefined = isCdpConfigured ? (
@@ -131,7 +131,7 @@ export const BoxeverScripts: JSX.Element | undefined = isCdpConfigured ? (
       _boxever_settings = {
         client_key: '${CDP_CLIENT_KEY}',
         target: '${CDP_API_TARGET_ENDPOINT}',
-        cookie_domain: '.xmcloudcm.localhost',
+        cookie_domain: '.sitecorecloud.io',
         pointOfSale: '${POINT_OF_SALE}',
         web_flow_target: 'https://d35vb5cccm4xzp.cloudfront.net',
       };`}</Script>
@@ -210,36 +210,40 @@ function delayUntilBoxeverIsReady(functionToDelay: () => unknown) {
 }
 
 function sendEventCreate(eventConfig: Record<string, unknown>, page?: string) {
-  if (typeof window === 'undefined' || !isBoxeverConfiguredInBrowser()) {
+     if (typeof window === 'undefined' || !isBoxeverConfiguredInBrowser()) {
     return new Promise<void>(function (resolve) {
       resolve();
     });
-  }
+    }
 
   // Set the page now as the location might have already changed when createEventPayload will be executed.
   const eventWithCurrentPage = getConfigWithCurrentPage(eventConfig, page);
-
+console.log("eventWithCurrentPage", eventWithCurrentPage)
   return new Promise(function (resolve, reject) {
     try {
-      delayUntilBoxeverIsReady(function () {
-        window._boxeverq.push(function () {
-          window.Boxever.eventCreate(
-            // Set the browserId on the event just before sending it to ensure it is up to date.
-            createEventPayload(eventWithCurrentPage),
-            function (response) {
-              if (!response) {
-                reject('No response provided.');
-              }
-              if (response.status !== 'OK') {
-                reject('Response status: ' + response.status);
-              }
-              resolve(response);
-            },
-            'json'
-          );
-        });
+       delayUntilBoxeverIsReady(function () {
+      window._boxeverq.push(function () {
+        console.log(window.Boxever);
+        window.Boxever.eventCreate(
+          // Set the browserId on the event just before sending it to ensure it is up to date.
+          createEventPayload(eventWithCurrentPage),
+          function (response) {
+            if (!response) {
+              reject('No response provided.');
+              console.log('not ok');
+            }
+            if (response.status !== 'OK') {
+              console.log('OK');
+              reject('Response status: ' + response.status);
+            }
+            resolve(response);
+          },
+          'json'
+        );
+         });
       });
     } catch (err) {
+      console.log('not ok at all');
       reject(err);
     }
   });
@@ -258,11 +262,15 @@ function callFlows(flowConfig: Record<string, unknown>) {
   return new Promise(function (resolve, reject) {
     try {
       delayUntilBoxeverIsReady(function () {
+      console.log(window.Boxever, flowConfig)
         window._boxeverq.push(function () {
           window.Boxever.callFlows(
+           
             // Set the browserId on the flow just before sending it to ensure it is up to date.
             createFlowPayload(eventWithCurrentPage),
+            
             function (response) {
+              console.log(response)
               if (!response) {
                 reject('No response provided.');
               }
@@ -271,8 +279,9 @@ function callFlows(flowConfig: Record<string, unknown>) {
             'json'
           );
         });
-      });
+       });
     } catch (err) {
+      console.log('no response')
       reject(err);
     }
   });
